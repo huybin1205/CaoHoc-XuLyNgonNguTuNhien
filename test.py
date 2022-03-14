@@ -1,6 +1,9 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 import json
 import os
 import pandas as pd
+from pyvi import ViTokenizer, ViPosTagger
 def readData(path):
     with open(path, encoding='utf8') as json_file:
         content = json_file.read().replace('\n','')
@@ -15,4 +18,7 @@ if __name__ == '__main__':
         data = readData(pathFolder+'\\'+file)
         df = pd.concat([pd.DataFrame(data), df], ignore_index=True)
     df = pd.DataFrame(df, columns=['title','paragraph','tags'])
-    print(df)
+    df['title'] = df['title'].apply(lambda x: ViPosTagger.postagging(ViTokenizer.tokenize(x)))
+    # df['paragraph'] = df['paragraph'].apply(lambda x: ViPosTagger.postagging(ViTokenizer.tokenize(x)))
+
+    print(df.head())
